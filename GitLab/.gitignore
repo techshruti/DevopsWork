@@ -1,0 +1,42 @@
+# ------------------------
+# Terraform .gitignore
+# ------------------------
+
+# Local .terraform directories
+**/.terraform/*
+
+# Terraform lock file (optional, but recommended to keep if you want reproducible provider versions)
+# .terraform.lock.hcl
+
+# State files
+*.tfstate
+*.tfstate.*
+terraform.tfstate
+terraform.tfstate.backup
+crash.log
+
+# Variable files with secrets
+*.tfvars
+*.tfvars.json
+terraform.tfvars
+
+# Override files (for local customizations)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Sensitive credentials
+*.pem
+*.key
+*.p12
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
