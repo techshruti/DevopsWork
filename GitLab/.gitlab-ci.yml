@@ -1,0 +1,25 @@
+stages:
+  - init
+  - validate
+  - plan
+
+variables:
+  TF_ROOT: "devops_first"   # folder where your .tf files live
+
+before_script:
+  - cd $TF_ROOT
+
+terraform_init:
+  stage: init
+  script:
+    - terraform init
+
+terraform_validate:
+  stage: validate
+  script:
+    - terraform validate
+
+terraform_plan:
+  stage: plan
+  script:
+    - terraform plan
