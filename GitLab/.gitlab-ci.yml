@@ -1,9 +1,45 @@
-image: alpine:latest   # lightweight image just for testing
+image: hashicorp/terraform:1.13
 
 stages:
-  - test
+  - init
+  - validate
+  - plan
+  - apply
 
-test_job:
-  stage: test
+default:
+  before_script:
+    - cd GitLab/devops_first
+
+terraform_init:
+  stage: init
   script:
-    - echo "Hello GitLab CI – pipeline is working!"
+    - terraform init
+  only:
+    - main
+
+terraform_validate:
+  stage: validate
+  script:
+    - terraform validate
+  only:
+    - main
+
+terraform_plan:
+  stage: plan
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - tfplan
+  only:
+    - main
+
+terraform_apply:
+  stage: apply
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - terraform_plan
+  only:
+    - main
+  when: manual   # requires manual trigger
