@@ -1,9 +1,9 @@
-image: alpine:latest
+image: alpine:latest   # lightweight image just for testing
 
 stages:
   - test
 
-job1:
+test_job:
   stage: test
   script:
-    - echo "Hello GitLab CI"
+    - echo "Hello GitLab CI – pipeline is working!"
