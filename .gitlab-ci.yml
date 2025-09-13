@@ -1,6 +1,4 @@
-image:
-  name: hashicorp/terraform:1.5.7
-  entrypoint: ["sh", "-c"]
+image: hashicorp/terraform:1.5.7
 
 stages:
   - init
@@ -8,17 +6,15 @@ stages:
   - plan
   - apply
 
-before_script:
-  # Move into your Terraform project folder
-  - cd GitLab/devops_first
-
+# Init Stage
 terraform_init:
   stage: init
   script:
-    - cd GitLab/devops_first
     - terraform init -backend=false
+  only:
+    - main
 
-
+# Validate Stage
 terraform_validate:
   stage: validate
   script:
@@ -26,22 +22,19 @@ terraform_validate:
   only:
     - main
 
+# Plan Stage
 terraform_plan:
   stage: plan
   script:
     - terraform plan -out=tfplan
-  artifacts:
-    paths:
-      - GitLab/devops_first/tfplan
   only:
     - main
 
+# Apply Stage (manual to avoid accidental apply)
 terraform_apply:
   stage: apply
   script:
     - terraform apply -auto-approve tfplan
-  dependencies:
-    - terraform_plan
+  when: manual
   only:
     - main
-  when: manual   # Apply should be triggered manually for safety
