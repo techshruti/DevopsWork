@@ -1,13 +1,4 @@
-image:
-  name: hashicorp/terraform:1.5.7
-  entrypoint: [""]
-
-before_script:
-  - export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-  - cd GitLab/devops_first   # 👈 go into the folder where your .tf files live
-  - rm -rf .terraform
-  - terraform init
+image: hashicorp/terraform:1.5.7
 
 stages:
   - validate
@@ -15,10 +6,13 @@ stages:
   - apply
   - destroy
 
+default:
+  before_script:
+    - cd GitLab/devops_first
+
 terraform_validate:
   stage: validate
   script:
-    - cd GitLab/devops_first
     - terraform validate
   only:
     - main
@@ -26,7 +20,6 @@ terraform_validate:
 terraform_plan:
   stage: plan
   script:
-    - cd GitLab/devops_first
     - terraform plan -out=tfplan
   artifacts:
     paths:
@@ -37,19 +30,17 @@ terraform_plan:
 terraform_apply:
   stage: apply
   script:
-    - cd GitLab/devops_first
     - terraform apply -auto-approve tfplan
   dependencies:
     - terraform_plan
-  when: manual
   only:
     - main
+  when: manual
 
 terraform_destroy:
   stage: destroy
   script:
-    - cd GitLab/devops_first
     - terraform destroy -auto-approve
-  when: manual
   only:
     - main
+  when: manual
