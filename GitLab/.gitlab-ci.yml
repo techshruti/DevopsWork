@@ -3,48 +3,18 @@ image: hashicorp/terraform:1.5.7
 stages:
   - init
   - validate
-  - plan
-  - apply
 
-# Default working directory for all jobs
-default:
-  before_script:
-    - cd GitLab/devops_first
-
-# Stage 1: terraform init
 terraform_init:
   stage: init
   script:
+    - terraform --version
     - terraform init
   only:
     - main
 
-# Stage 2: terraform validate
 terraform_validate:
   stage: validate
   script:
     - terraform validate
   only:
     - main
-
-# Stage 3: terraform plan
-terraform_plan:
-  stage: plan
-  script:
-    - terraform plan -out=tfplan
-  artifacts:
-    paths:
-      - GitLab/devops_first/tfplan
-  only:
-    - main
-
-# Stage 4: terraform apply
-terraform_apply:
-  stage: apply
-  script:
-    - terraform apply -auto-approve tfplan
-  dependencies:
-    - terraform_plan
-  only:
-    - main
-  when: manual
