@@ -1,4 +1,4 @@
-image: hashicorp/terraform:light
+image: cycloid/terraform:1.5.7
 
 stages:
   - init
