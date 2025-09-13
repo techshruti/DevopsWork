@@ -5,8 +5,11 @@ image:
 stages:
   - init
   - validate
+  - plan
+  - apply
 
 before_script:
+  # Move into your Terraform project folder
   - cd GitLab/devops_first
 
 terraform_init:
@@ -22,3 +25,23 @@ terraform_validate:
     - terraform validate
   only:
     - main
+
+terraform_plan:
+  stage: plan
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - GitLab/devops_first/tfplan
+  only:
+    - main
+
+terraform_apply:
+  stage: apply
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - terraform_plan
+  only:
+    - main
+  when: manual   # Apply should be triggered manually for safety
