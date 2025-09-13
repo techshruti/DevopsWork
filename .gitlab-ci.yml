@@ -8,26 +8,33 @@ stages:
   - plan
   - apply
 
+variables:
+  TF_DIR: "GitLab/devops_first"   # 👈 path to your terraform configs
+
 terraform_init:
   stage: init
   script:
+    - cd $TF_DIR
     - terraform init -backend=false
 
 terraform_validate:
   stage: validate
   script:
+    - cd $TF_DIR
     - terraform validate
 
 terraform_plan:
   stage: plan
   script:
+    - cd $TF_DIR
     - terraform plan -out=tfplan
   artifacts:
     paths:
-      - tfplan
+      - $TF_DIR/tfplan
 
 terraform_apply:
   stage: apply
   script:
+    - cd $TF_DIR
     - terraform apply -auto-approve tfplan
-  when: manual   # safer to apply manually
+  when: manual
