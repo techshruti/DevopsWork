@@ -1,3 +1,8 @@
+image:
+  name: hashicorp/terraform:1.12.2
+entrypoint: 
+  - 'usr/bin/env'
+  - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin'
 stages:
   - init
   - validate
