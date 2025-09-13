@@ -1,14 +1,22 @@
 image: hashicorp/terraform:1.5.7
 
 stages:
+  - init
   - validate
   - plan
-  - apply
-  - destroy
 
-default:
-  before_script:
-    - cd GitLab/devops_first
+before_script:
+  # Go into your Terraform folder
+  - cd GitLab/devops_first
+  # Remove any backend config so init doesn’t fail
+  - rm -f backend.tf
+
+terraform_init:
+  stage: init
+  script:
+    - terraform init
+  only:
+    - main
 
 terraform_validate:
   stage: validate
@@ -26,21 +34,3 @@ terraform_plan:
       - GitLab/devops_first/tfplan
   only:
     - main
-
-terraform_apply:
-  stage: apply
-  script:
-    - terraform apply -auto-approve tfplan
-  dependencies:
-    - terraform_plan
-  only:
-    - main
-  when: manual
-
-terraform_destroy:
-  stage: destroy
-  script:
-    - terraform destroy -auto-approve
-  only:
-    - main
-  when: manual
