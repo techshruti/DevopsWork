@@ -5,6 +5,8 @@ image:
 stages:
   - init
   - validate
+  - plan
+  - apply
 
 terraform_init:
   stage: init
@@ -15,3 +17,17 @@ terraform_validate:
   stage: validate
   script:
     - terraform validate
+
+terraform_plan:
+  stage: plan
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - tfplan
+
+terraform_apply:
+  stage: apply
+  script:
+    - terraform apply -auto-approve tfplan
+  when: manual   # safer to apply manually
