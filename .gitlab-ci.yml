@@ -1,10 +1,15 @@
-image:
-  name: hashicorp/terraform:1.5.7
-  entrypoint: [""]
+image: hashicorp/terraform:1.5.7
 
 stages:
   - init
   - validate
+  - plan
+
+before_script:
+  # Go into your Terraform folder
+  - cd GitLab/devops_first
+  # Remove any backend config so init doesn’t fail
+  - rm -f backend.tf
 
 terraform_init:
   stage: init
@@ -17,5 +22,15 @@ terraform_validate:
   stage: validate
   script:
     - terraform validate
+  only:
+    - main
+
+terraform_plan:
+  stage: plan
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - GitLab/devops_first/tfplan
   only:
     - main
