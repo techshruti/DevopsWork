@@ -1,20 +1,9 @@
-image: hashicorp/terraform:1.5.7
+image: alpine:latest
 
 stages:
-  - init
-  - validate
+  - test
 
-terraform_init:
-  stage: init
+job1:
+  stage: test
   script:
-    - terraform --version
-    - terraform init
-  only:
-    - main
-
-terraform_validate:
-  stage: validate
-  script:
-    - terraform validate
-  only:
-    - main
+    - echo "Hello GitLab CI"
