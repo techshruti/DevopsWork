@@ -1,30 +1,45 @@
-image:
-  name: hashicorp/terraform:1.12.2
-entrypoint: 
-  - 'usr/bin/env'
-  - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin'
+image: hashicorp/terraform:1.5.7
+
 stages:
   - init
   - validate
   - plan
+  - apply
 
-variables:
-  TF_ROOT: "devops_first"   # folder where your .tf files live
-
-before_script:
-  - cd $TF_ROOT
-
+# Stage 1: terraform init
 terraform_init:
   stage: init
   script:
     - terraform init
+  only:
+    - main   # run only on main branch
 
+# Stage 2: terraform validate
 terraform_validate:
   stage: validate
   script:
     - terraform validate
+  only:
+    - main
 
+# Stage 3: terraform plan (no infra changes, just preview)
 terraform_plan:
   stage: plan
   script:
-    - terraform plan
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - tfplan
+  only:
+    - main
+
+# Stage 4: terraform apply (applies real infra changes)
+terraform_apply:
+  stage: apply
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - terraform_plan
+  only:
+    - main
+  when: manual   # requires manual approval
