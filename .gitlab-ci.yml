@@ -8,6 +8,9 @@ stages:
   - plan
   - apply
 
+variables:
+  AWS_DEFAULT_REGION: ap-south-1   # change if needed
+
 terraform_init:
   stage: init
   script:
@@ -44,4 +47,4 @@ terraform_apply:
     - terraform_plan
   only:
     - main
-  when: manual   # so apply doesn’t run automatically
+  when: manual
