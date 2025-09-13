@@ -1,14 +1,17 @@
-image: hashicorp/terraform:1.5.7
+image:
+  name: hashicorp/terraform:1.5.7
+  entrypoint: [""]
 
 stages:
+  - init
   - validate
-  - plan
-  - apply
-  - destroy
 
-default:
-  before_script:
-    - cd GitLab/devops_first
+terraform_init:
+  stage: init
+  script:
+    - terraform init
+  only:
+    - main
 
 terraform_validate:
   stage: validate
@@ -16,31 +19,3 @@ terraform_validate:
     - terraform validate
   only:
     - main
-
-terraform_plan:
-  stage: plan
-  script:
-    - terraform plan -out=tfplan
-  artifacts:
-    paths:
-      - GitLab/devops_first/tfplan
-  only:
-    - main
-
-terraform_apply:
-  stage: apply
-  script:
-    - terraform apply -auto-approve tfplan
-  dependencies:
-    - terraform_plan
-  only:
-    - main
-  when: manual
-
-terraform_destroy:
-  stage: destroy
-  script:
-    - terraform destroy -auto-approve
-  only:
-    - main
-  when: manual
