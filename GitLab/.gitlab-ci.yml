@@ -46,4 +46,4 @@ terraform_apply:
     - terraform_plan
   only:
     - main
-  when: manual   # so you control apply
+  when: manual
