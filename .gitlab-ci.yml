@@ -15,9 +15,9 @@ before_script:
 terraform_init:
   stage: init
   script:
-    - terraform init
-  only:
-    - main
+    - cd GitLab/devops_first
+    - terraform init -backend=false
+
 
 terraform_validate:
   stage: validate
