@@ -1,21 +1,19 @@
-image: hashicorp/terraform:light
+image:
+  name: hashicorp/terraform:1.5.7
+  entrypoint: [""]
+
+before_script:
+  # Export AWS credentials (make sure you set them in GitLab CI/CD > Settings > Variables)
+  - export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  - rm -rf .terraform
+  - terraform init
 
 stages:
-  - init
   - validate
   - plan
   - apply
-
-default:
-  before_script:
-    - cd GitLab/devops_first
-
-terraform_init:
-  stage: init
-  script:
-    - terraform init
-  only:
-    - main
+  - destroy
 
 terraform_validate:
   stage: validate
@@ -40,6 +38,14 @@ terraform_apply:
     - terraform apply -auto-approve tfplan
   dependencies:
     - terraform_plan
+  when: manual
   only:
     - main
-  when: manual   # requires manual trigger
+
+terraform_destroy:
+  stage: destroy
+  script:
+    - terraform destroy -auto-approve
+  when: manual
+  only:
+    - main
