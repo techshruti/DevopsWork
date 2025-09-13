@@ -5,10 +5,13 @@ image:
 stages:
   - init
   - validate
+  - plan
+  - apply
 
 terraform_init:
   stage: init
   script:
+    - cd GitLab/devops_first
     - terraform init
   only:
     - main
@@ -16,6 +19,29 @@ terraform_init:
 terraform_validate:
   stage: validate
   script:
+    - cd GitLab/devops_first
     - terraform validate
   only:
     - main
+
+terraform_plan:
+  stage: plan
+  script:
+    - cd GitLab/devops_first
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - GitLab/devops_first/tfplan
+  only:
+    - main
+
+terraform_apply:
+  stage: apply
+  script:
+    - cd GitLab/devops_first
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - terraform_plan
+  only:
+    - main
+  when: manual   # so apply doesn’t run automatically
