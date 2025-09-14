@@ -1,6 +1,6 @@
 image:
   name: hashicorp/terraform:1.5.7
-  entrypoint: ["/bin/sh", "-c"]
+  entrypoint: ["/usr/bin/env", "PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/bin"]
 
 stages:
   - init
@@ -9,13 +9,13 @@ stages:
   - apply
 
 variables:
-  TF_DIR: "GitLab/devops_first"   # 👈 path to your terraform configs
+  TF_DIR: "GitLab/devops_first"   # adjust path if needed
 
 terraform_init:
   stage: init
   script:
     - cd $TF_DIR
-    - terraform init -backend=false
+    - terraform init -upgrade
 
 terraform_validate:
   stage: validate
@@ -28,9 +28,6 @@ terraform_plan:
   script:
     - cd $TF_DIR
     - terraform plan -out=tfplan
-  artifacts:
-    paths:
-      - $TF_DIR/tfplan
 
 terraform_apply:
   stage: apply
