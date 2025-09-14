@@ -15,7 +15,8 @@ terraform_init:
   stage: init
   script:
     - cd $TF_DIR
-    - terraform init -upgrade
+    - terraform init -backend=false -upgrade
+
 
 terraform_validate:
   stage: validate
