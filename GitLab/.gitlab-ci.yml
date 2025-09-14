@@ -1,37 +1,49 @@
-variables:
-  TF_DIR: "GitLab/devops_first"
-
 stages:
   - init
   - validate
   - plan
+  - apply
+
+variables:
+  TF_DIR: "GitLab/devops_first"
+
+before_script:
+  - echo "=== Current working directory ==="
+  - pwd
+  - echo "=== Repository tree ==="
+  - ls -R
 
 init:
-  image:
-    name: hashicorp/terraform:1.6.6
-    entrypoint: [""]
   stage: init
+  image: hashicorp/terraform:1.6.6
   script:
     - cd $TF_DIR
+    - echo "=== Inside TF_DIR ==="
+    - pwd
+    - ls -la
     - terraform init -backend=false
 
 validate:
-  image:
-    name: hashicorp/terraform:1.6.6
-    entrypoint: [""]
   stage: validate
+  image: hashicorp/terraform:1.6.6
   script:
     - cd $TF_DIR
+    - ls -la
     - terraform validate
 
 plan:
-  image:
-    name: hashicorp/terraform:1.6.6
-    entrypoint: [""]
   stage: plan
+  image: hashicorp/terraform:1.6.6
   script:
     - cd $TF_DIR
+    - ls -la
     - terraform plan -out=tfplan
-  artifacts:
-    paths:
-      - $TF_DIR/tfplan
+
+apply:
+  stage: apply
+  image: hashicorp/terraform:1.6.6
+  when: manual
+  script:
+    - cd $TF_DIR
+    - ls -la
+    - terraform apply -auto-approve tfplan
