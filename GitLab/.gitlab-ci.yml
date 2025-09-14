@@ -1,48 +1,37 @@
+variables:
+  TF_DIR: "GitLab/devops_first"
+
 stages:
   - init
   - validate
   - plan
-  - apply
 
-variables:
-  TF_DIR: "devops_first"
-
-terraform_init:
-  stage: init
+init:
   image:
     name: hashicorp/terraform:1.6.6
     entrypoint: [""]
+  stage: init
   script:
     - cd $TF_DIR
-    - terraform init -upgrade
+    - terraform init -backend=false
 
-terraform_validate:
-  stage: validate
+validate:
   image:
     name: hashicorp/terraform:1.6.6
     entrypoint: [""]
+  stage: validate
   script:
     - cd $TF_DIR
     - terraform validate
 
-terraform_plan:
-  stage: plan
+plan:
   image:
     name: hashicorp/terraform:1.6.6
     entrypoint: [""]
+  stage: plan
   script:
     - cd $TF_DIR
     - terraform plan -out=tfplan
   artifacts:
     paths:
       - $TF_DIR/tfplan
-
-terraform_apply:
-  stage: apply
-  image:
-    name: hashicorp/terraform:1.6.6
-    entrypoint: [""]
-  script:
-    - cd $TF_DIR
-    - terraform apply -auto-approve tfplan
-  when: manual   # so it won’t run automatically, you must trigger it
