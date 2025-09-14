@@ -6,7 +6,14 @@
 **/.terraform/*
 
 # Terraform lock file (optional, but recommended to keep if you want reproducible provider versions)
+.terraform.lock.hcl
+# Terraform
+.terraform/
 # .terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+crash.log
+
 
 # State files
 *.tfstate
