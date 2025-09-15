@@ -19,9 +19,18 @@ plan:
   stage: plan
   image: hashicorp/terraform:1.6.6
   script:
-    - cd $TF_DIR
+    - echo ">>> Current working directory:"
+    - pwd
+    - echo ">>> Listing repo root:"
     - ls -la
+    - echo ">>> Listing GitLab/devops_first directory:"
+    - ls -la GitLab/devops_first || echo "No such directory"
+    - cd GitLab/devops_first
+    - pwd
+    - ls -la
+    - terraform init
     - terraform plan -out=tfplan
+
 
 apply:
   stage: apply
