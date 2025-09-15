@@ -1,0 +1,25 @@
+image:
+  name: hashicorp/terraform:1.6.6
+  entrypoint: ["/bin/sh", "-lc"]
+
+variables:
+  TF_DIR: "devops_first"   # folder under GitLab/ that has your .tf files
+
+stages:
+  - plan
+  - apply
+
+plan:
+  stage: plan
+  script:
+    - cd "$CI_PROJECT_DIR/$TF_DIR"
+    - ls -la
+    - terraform init
+    - terraform plan -out=tfplan
+
+apply:
+  stage: apply
+  when: manual
+  script:
+    - cd "$CI_PROJECT_DIR/$TF_DIR"
+    - terraform apply -auto-approve tfplan
