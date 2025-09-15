@@ -1,3 +1,11 @@
+variables:
+  TF_DIR: "GitLab/devops_first"
+
+stages:
+  - init
+  - plan
+  - apply
+
 init:
   stage: init
   image:
@@ -7,29 +15,17 @@ init:
     - cd $TF_DIR
     - terraform init
 
-validate:
-  stage: validate
-  image:
-    name: hashicorp/terraform:1.6.6
-    entrypoint: ["/bin/sh", "-c"]
-  script:
-    - cd $TF_DIR
-    - terraform validate
-
 plan:
   stage: plan
-  image:
-    name: hashicorp/terraform:1.6.6
-    entrypoint: ["/bin/sh", "-c"]
+  image: hashicorp/terraform:1.6.6
   script:
     - cd $TF_DIR
+    - ls -la
     - terraform plan -out=tfplan
 
 apply:
   stage: apply
-  image:
-    name: hashicorp/terraform:1.6.6
-    entrypoint: ["/bin/sh", "-c"]
+  image: hashicorp/terraform:1.6.6
   when: manual
   script:
     - cd $TF_DIR
