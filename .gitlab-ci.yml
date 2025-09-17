@@ -44,7 +44,8 @@ plan:
     - init
   script:
     - cd $TF_DIR
-    - echo "Using AWS Key: $AWS_ACCESS_KEY_ID in region $AWS_DEFAULT_REGION"
+    - echo "AWS Key is set: ${AWS_ACCESS_KEY_ID:0:4}****"
+    - echo "Region is: $AWS_DEFAULT_REGION"
     - terraform plan -var "key_name=$KEY_NAME" -out=tfplan
   artifacts:
     paths:
@@ -59,7 +60,7 @@ apply:
     entrypoint: ["/bin/sh", "-c"]
   dependencies:
     - plan
-  when: manual   # must run manually to prevent accidents
+  when: manual   # protect apply, must be run manually
   script:
     - cd $TF_DIR
     - terraform apply -auto-approve tfplan
