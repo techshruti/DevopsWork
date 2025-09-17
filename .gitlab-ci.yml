@@ -7,6 +7,7 @@ stages:
 variables:
   TF_DIR: "GitLab/terraform"
 
+# ---- INIT ----
 init:
   stage: init
   image:
@@ -14,36 +15,51 @@ init:
     entrypoint: ["/bin/sh", "-c"]
   script:
     - cd $TF_DIR
-    - terraform init -input=false -upgrade
+    - terraform init -input=false
   artifacts:
     paths:
-      - $TF_DIR/.terraform        # Save provider plugins
+      - $TF_DIR/.terraform
       - $TF_DIR/.terraform.lock.hcl
     expire_in: 1h
 
+# ---- VALIDATE ----
 validate:
   stage: validate
-  image: hashicorp/terraform:1.6.6
+  image:
+    name: hashicorp/terraform:1.6.6
+    entrypoint: ["/bin/sh", "-c"]
+  dependencies:
+    - init
   script:
     - cd $TF_DIR
     - terraform validate
 
+# ---- PLAN ----
 plan:
   stage: plan
-  image: hashicorp/terraform:1.6.6
+  image:
+    name: hashicorp/terraform:1.6.6
+    entrypoint: ["/bin/sh", "-c"]
+  dependencies:
+    - init
   script:
     - cd $TF_DIR
-    - terraform init -upgrade   # ensure lock file consistent
-    - terraform plan -out=tfplan
+    # Use tfvars or CI variable to avoid "no value for key_name" error
+    - terraform plan -var "key_name=$KEY_NAME" -out=tfplan
   artifacts:
     paths:
       - $TF_DIR/tfplan
-    expire_in: 1 hour
+    expire_in: 1h
 
+# ---- APPLY ----
 apply:
   stage: apply
-  image: hashicorp/terraform:1.6.6
-  when: manual
+  image:
+    name: hashicorp/terraform:1.6.6
+    entrypoint: ["/bin/sh", "-c"]
+  dependencies:
+    - plan
+  when: manual   # protect apply, must be run manually
   script:
     - cd $TF_DIR
     - terraform apply -auto-approve tfplan
