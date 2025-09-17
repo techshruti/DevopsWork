@@ -6,9 +6,6 @@ stages:
 
 variables:
   TF_DIR: "GitLab/terraform"
-  AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
-  AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
-  AWS_DEFAULT_REGION: "ap-south-1"
 
 # ---- INIT ----
 init:
@@ -18,7 +15,7 @@ init:
     entrypoint: ["/bin/sh", "-c"]
   script:
     - cd $TF_DIR
-    - terraform init -input=false
+    - terraform init -input=false -upgrade
   artifacts:
     paths:
       - $TF_DIR/.terraform
@@ -47,7 +44,7 @@ plan:
     - init
   script:
     - cd $TF_DIR
-    # Use tfvars or CI variable to avoid "no value for key_name" error
+    - echo "Using AWS Key: $AWS_ACCESS_KEY_ID in region $AWS_DEFAULT_REGION"
     - terraform plan -var "key_name=$KEY_NAME" -out=tfplan
   artifacts:
     paths:
@@ -62,7 +59,7 @@ apply:
     entrypoint: ["/bin/sh", "-c"]
   dependencies:
     - plan
-  when: manual   # protect apply, must be run manually
+  when: manual   # must run manually to prevent accidents
   script:
     - cd $TF_DIR
     - terraform apply -auto-approve tfplan
