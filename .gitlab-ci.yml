@@ -41,7 +41,6 @@ plan:
     - validate
   script:
     - cd $TF_DIR
-    - echo ">>> Debug: key_name is $TF_VAR_key_name"
     - terraform plan -out=tfplan
   artifacts:
     paths:
