@@ -5,7 +5,7 @@ stages:
   - apply
 
 variables:
-  TF_DIR: "GitLab/terraform"
+  TF_DIR: "GitLab/devops_first"
 
 init:
   stage: init
@@ -33,6 +33,10 @@ plan:
   script:
     - cd $TF_DIR
     - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - $TF_DIR/tfplan
+    expire_in: 1 hour
 
 apply:
   stage: apply
@@ -43,3 +47,5 @@ apply:
   script:
     - cd $TF_DIR
     - terraform apply -auto-approve tfplan
+  dependencies:
+    - plan
