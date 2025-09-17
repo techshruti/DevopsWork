@@ -33,6 +33,9 @@ plan:
   script:
     - cd $TF_DIR
     - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - $TF_DIR/tfplan
 
 apply:
   stage: apply
