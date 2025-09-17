@@ -38,7 +38,7 @@ plan:
     name: hashicorp/terraform:1.6.6
     entrypoint: ["/bin/sh", "-c"]
   dependencies:
-    - init
+    - validate
   script:
     - cd $TF_DIR
     - terraform plan -out=tfplan
@@ -46,6 +46,7 @@ plan:
     paths:
       - $TF_DIR/tfplan
     expire_in: 1h
+
 
 apply:
   stage: apply
