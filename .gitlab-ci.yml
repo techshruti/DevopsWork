@@ -1,0 +1,47 @@
+stages:
+  - validate
+  - plan
+  - apply
+  - destroy
+
+variables:
+  TF_DIR: "GitLab/terraform"
+
+default:
+  image: hashicorp/terraform:1.6.6
+  before_script:
+    - cd $TF_DIR
+    - terraform --version
+    - pwd
+    - ls -la
+
+# Stage 1: Validate
+validate:
+  stage: validate
+  script:
+    - terraform init -backend=false
+    - terraform validate
+
+# Stage 2: Plan
+plan:
+  stage: plan
+  script:
+    - terraform init
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - $TF_DIR/tfplan
+
+# Stage 3: Apply
+apply:
+  stage: apply
+  when: manual   # manual approval
+  script:
+    - terraform apply -auto-approve tfplan
+
+# Stage 4: Destroy
+destroy:
+  stage: destroy
+  when: manual   # avoid accidental destruction
+  script:
+    - terraform destroy -auto-approve
