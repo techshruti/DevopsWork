@@ -3,7 +3,7 @@ image:
   entrypoint: ["/bin/sh", "-lc"]
 
 variables:
-  TF_DIR: "devops_first"   # folder under GitLab/ that has your .tf files
+  TF_DIR: "GitLab/terraform"   # folder under GitLab/ that has your .tf files
 
 stages:
   - plan
