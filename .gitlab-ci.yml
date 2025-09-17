@@ -39,28 +39,4 @@ plan:
   stage: plan
   image:
     name: hashicorp/terraform:1.6.6
-    entrypoint: ["/bin/sh", "-c"]
-  dependencies:
-    - init
-  script:
-    - cd "$TF_DIR"
-    - echo "AWS Key prefix: ${AWS_ACCESS_KEY_ID:0:4}****"
-    - echo "Region: $AWS_DEFAULT_REGION"
-    - terraform plan -var="key_name=$KEY_NAME" -out=tfplan
-  artifacts:
-    paths:
-      - $TF_DIR/tfplan
-    expire_in: 1h
-
-# ---- APPLY ----
-apply:
-  stage: apply
-  image:
-    name: hashicorp/terraform:1.6.6
-    entrypoint: ["/bin/sh", "-c"]
-  dependencies:
-    - plan
-  when: manual
-  script:
-    - cd "$TF_DIR"
-    - terraform apply -auto-approve tfplan
+    en
