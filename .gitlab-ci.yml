@@ -14,7 +14,7 @@ init:
     name: hashicorp/terraform:1.6.6
     entrypoint: ["/bin/sh", "-c"]
   script:
-    - cd $TF_DIR
+    - cd "$TF_DIR"
     - terraform init -input=false -upgrade
   artifacts:
     paths:
@@ -31,7 +31,7 @@ validate:
   dependencies:
     - init
   script:
-    - cd $TF_DIR
+    - cd "$TF_DIR"
     - terraform validate
 
 # ---- PLAN ----
@@ -43,10 +43,10 @@ plan:
   dependencies:
     - init
   script:
-    - cd $TF_DIR
+    - cd "$TF_DIR"
     - echo "AWS Key prefix: ${AWS_ACCESS_KEY_ID:0:4}****"
     - echo "Region: $AWS_DEFAULT_REGION"
-    - terraform plan -var "key_name=$KEY_NAME" -out=tfplan
+    - terraform plan -var="key_name=$KEY_NAME" -out=tfplan
   artifacts:
     paths:
       - $TF_DIR/tfplan
@@ -62,5 +62,5 @@ apply:
     - plan
   when: manual
   script:
-    - cd $TF_DIR
+    - cd "$TF_DIR"
     - terraform apply -auto-approve tfplan
