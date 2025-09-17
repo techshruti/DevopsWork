@@ -44,7 +44,8 @@ plan:
     - init
   script:
     - cd $TF_DIR
-    - echo "✅ Using AWS Region: $AWS_DEFAULT_REGION"
+    - echo "AWS Key prefix: ${AWS_ACCESS_KEY_ID:0:4}****"
+    - echo "Region: $AWS_DEFAULT_REGION"
     - terraform plan -var "key_name=$KEY_NAME" -out=tfplan
   artifacts:
     paths:
