@@ -62,7 +62,12 @@ apply:
     entrypoint: ["/bin/sh", "-c"]
   dependencies:
     - plan
-  when: manual   # ✅ safer, only runs when you click "Play"
   script:
     - cd "$TF_DIR"
     - terraform apply -auto-approve tfplan
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: on_success   # auto-apply in dev
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual       # manual approval in main
+    - when: never        # block on other branches
