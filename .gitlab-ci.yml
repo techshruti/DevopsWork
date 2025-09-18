@@ -44,14 +44,15 @@ plan:
     - init
   script:
     - cd "$TF_DIR"
-    - 'echo "AWS Key prefix: $(echo $AWS_ACCESS_KEY_ID | cut -c1-4)****"'
+    - 'echo "AWS Access Key starts with: ${AWS_ACCESS_KEY_ID:0:4}"'
+    - 'echo "Secret length: ${#AWS_SECRET_ACCESS_KEY}"'
     - 'echo "Region: $AWS_DEFAULT_REGION"'
     - terraform plan -var="key_name=$KEY_NAME" -out=tfplan
   artifacts:
     paths:
       - $TF_DIR/tfplan
-    expire_in: 1h
-
+      - $TF_DIR/.terraform.lock.hcl
+    
 # ---- APPLY ----
 apply:
   stage: apply
