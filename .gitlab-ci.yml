@@ -47,12 +47,13 @@ plan:
     - 'echo "AWS Key prefix: $(echo $AWS_ACCESS_KEY_ID | cut -c1-4)****"'
     - echo "Region: $AWS_DEFAULT_REGION"
     - terraform plan -var="key_name=$KEY_NAME" -out=tfplan
-  artifacts:                   # ✅ must wrap paths
+  artifacts:
     paths:
       - $TF_DIR/tfplan
       - $TF_DIR/.terraform
       - $TF_DIR/.terraform.lock.hcl
     expire_in: 1h
+
 # ---- APPLY ----
 apply:
   stage: apply
