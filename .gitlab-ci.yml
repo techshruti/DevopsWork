@@ -53,8 +53,7 @@ plan:
     - $TF_DIR/tfplan
     - $TF_DIR/.terraform          # ✅ carry providers
     - $TF_DIR/.terraform.lock.hcl # ✅ carry lock file
-  expire_in: 1h
-    
+      
 # ---- APPLY ----
 apply:
   stage: apply
