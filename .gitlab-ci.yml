@@ -49,9 +49,11 @@ plan:
     - 'echo "Region: $AWS_DEFAULT_REGION"'
     - terraform plan -var="key_name=$KEY_NAME" -out=tfplan
   artifacts:
-    paths:
-      - $TF_DIR/tfplan
-      - $TF_DIR/.terraform.lock.hcl
+  paths:
+    - $TF_DIR/tfplan
+    - $TF_DIR/.terraform          # ✅ carry providers
+    - $TF_DIR/.terraform.lock.hcl # ✅ carry lock file
+  expire_in: 1h
     
 # ---- APPLY ----
 apply:
