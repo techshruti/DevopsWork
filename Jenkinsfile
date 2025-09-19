@@ -36,3 +36,12 @@ pipeline {
 
         stage('Apply') {
             steps {
+                input "Approve apply?"
+                sh '''
+                  cd $TF_DIR
+                  $TF_BIN apply -auto-approve tfplan
+                '''
+            }
+        }
+    }
+}
