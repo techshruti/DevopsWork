@@ -3,18 +3,9 @@ pipeline {
 
     environment {
         TF_DIR = "GitLab/terraform"
-        TF_BIN = "${WORKSPACE}/terraform-bin"
-        PATH = "${TF_BIN}:${env.PATH}"
     }
 
     stages {
-        stage('Setup Terraform') {
-            steps {
-                sh 'ls -l $TF_BIN'   // just to confirm terraform binary exists
-                sh 'terraform version'
-            }
-        }
-
         stage('Init') {
             steps {
                 sh '''
@@ -37,13 +28,15 @@ pipeline {
             steps {
                 sh '''
                   cd $TF_DIR
-                  terraform plan -out=tfplan
+                  terraform plan -var-file=terraform.tfvars -out=tfplan
                 '''
             }
         }
 
         stage('Apply') {
-            when { branch "main" }
+            when {
+                branch 'main'
+            }
             steps {
                 sh '''
                   cd $TF_DIR
