@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         TF_DIR = "GitLab/terraform"
+        TF_BIN = "${WORKSPACE}/terraform-bin/terraform"
     }
 
     stages {
@@ -10,7 +11,7 @@ pipeline {
             steps {
                 sh '''
                   cd $TF_DIR
-                  terraform init -input=false -upgrade
+                  $TF_BIN init -input=false -upgrade
                 '''
             }
         }
@@ -19,7 +20,7 @@ pipeline {
             steps {
                 sh '''
                   cd $TF_DIR
-                  terraform validate
+                  $TF_BIN validate
                 '''
             }
         }
@@ -28,7 +29,7 @@ pipeline {
             steps {
                 sh '''
                   cd $TF_DIR
-                  terraform plan -var-file=terraform.tfvars -out=tfplan
+                  $TF_BIN plan -var-file=terraform.tfvars -out=tfplan
                 '''
             }
         }
@@ -40,7 +41,7 @@ pipeline {
             steps {
                 sh '''
                   cd $TF_DIR
-                  terraform apply -auto-approve tfplan
+                  $TF_BIN apply -auto-approve tfplan
                 '''
             }
         }
