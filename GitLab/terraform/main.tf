@@ -32,9 +32,9 @@ resource "aws_route_table_association" "a" {
   route_table_id = aws_route_table.rt.id
 }
 
-# Security Group
-resource "aws_security_group" "web_sg" {
-  name   = "allow_web"
+# Security Group (allow SSH + Docker ports if needed later)
+resource "aws_security_group" "docker_sg" {
+  name   = "allow_docker"
   vpc_id = aws_vpc.main.id
 
   ingress {
@@ -44,12 +44,13 @@ resource "aws_security_group" "web_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # optional: expose Docker API if needed (not usually recommended)
+  # ingress {
+  #   from_port   = 2375
+  #   to_port     = 2375
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   egress {
     from_port   = 0
@@ -59,15 +60,23 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# EC2 Instance
-resource "aws_instance" "web" {
-  ami           = "ami-00ca32bbc84273381"   
+# EC2 Instance (Docker Server)
+resource "aws_instance" "docker_server" {
+  ami           = "ami-08982f1c5bf93d976"   # Amazon Linux 2023 AMI (docker supported)
   instance_type = var.instance_type
   subnet_id     = aws_subnet.public.id
   key_name      = var.key_name
-  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  vpc_security_group_ids = [aws_security_group.docker_sg.id]
 
-  user_data = file("${path.module}/install_apache.sh")
+  # Install Docker using user_data
+  user_data = <<-EOF
+              #!/bin/bash
+              dnf update -y
+              dnf install -y docker
+              systemctl enable docker
+              systemctl start docker
+              usermod -aG docker ec2-user
+              EOF
 
-  tags = { Name = "web-server" }
+  tags = { Name = "docker-server" }
 }
