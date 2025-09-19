@@ -4,9 +4,9 @@ pipeline {
     environment {
         TF_DIR = "GitLab/terraform"
         TF_BIN = "${WORKSPACE}/terraform-bin/terraform"
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')      // store in Jenkins
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')  // store in Jenkins
-        AWS_DEFAULT_REGION = "us-east-1"
+
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
     }
 
     stages {
