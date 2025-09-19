@@ -35,15 +35,4 @@ pipeline {
         }
 
         stage('Apply') {
-            when {
-                branch 'main'
-            }
             steps {
-                sh '''
-                  cd $TF_DIR
-                  $TF_BIN apply -auto-approve tfplan
-                '''
-            }
-        }
-    }
-}
